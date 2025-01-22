@@ -54,6 +54,7 @@ services:
 
   airflow:
     image: apache/airflow:2.7.3-python3.8
+    container_name: airflow
     depends_on:
       - kafka
       - spark
@@ -67,7 +68,8 @@ services:
       - ./dags:/opt/airflow/dags
       - ./logs:/opt/airflow/logs
       - ./plugins:/opt/airflow/plugins
-    command: ["airflow", "standalone"]
+      - ./requirements.txt:/opt/airflow/requirements.txt
+    command: sh -c "airflow standalone"
 
 volumes:
   mongodb_data:
