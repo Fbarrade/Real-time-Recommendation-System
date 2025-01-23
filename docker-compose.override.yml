@@ -1,0 +1,26 @@
+services:
+  postgres:
+    volumes:
+      - airflow-postgres-data:/var/lib/postgresql/data
+
+  webserver:
+    volumes:
+      - ./dags:/usr/local/airflow/dags
+      - ./logs:/usr/local/airflow/logs
+      - ./data:/usr/local/airflow/data  
+
+  scheduler:
+    volumes:
+      - ./dags:/usr/local/airflow/dags
+      - ./logs:/usr/local/airflow/logs
+      - ./data:/usr/local/airflow/data  
+
+volumes:
+  airflow-postgres-data:
+    driver: local
+  airflow-logs:
+    driver: local
+  airflow-dags:
+    driver: local
+  data-volume:  
+    driver: local
