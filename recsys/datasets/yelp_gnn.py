@@ -69,14 +69,17 @@ class YelpDestinationsGNNDataset(BaseDataset):
         super(YelpDestinationsGNNDataset, self).__init__()
 
     def one_hot_encode_categories(self, df: pd.DataFrame, column_name: str):
-
         all_categories = df[column_name].str.split(',').explode().str.strip()
         unique_categories = all_categories.unique()
 
-        for category in unique_categories:
-            df[category] = df[column_name].apply(lambda x: 1 if category in x else 0)
+        encoded_columns = {}
 
+        for category in unique_categories:
+            encoded_columns[category] = df[column_name].apply(lambda x: 1 if category in x else 0)
+
+        df = pd.concat([df, pd.DataFrame(encoded_columns)], axis=1)
         return df
+
 
     def process(self):
         assert self.df is not None, "self.df must be not None, call self.read_csv first."

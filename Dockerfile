@@ -6,8 +6,8 @@ RUN /usr/local/bin/install-system-packages
 
 COPY requirements.txt .
 
-RUN pip install -e /usr/local/airflow/
-
 COPY recsys /usr/local/airflow/recsys
+
+RUN pip install -e /usr/local/airflow/
 
 RUN /usr/local/bin/install-python-dependencies

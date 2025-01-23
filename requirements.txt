@@ -1,3 +1,6 @@
 # Astro Runtime includes the following pre-installed providers packages: https://www.astronomer.io/docs/astro/runtime-image-architecture#provider-packages
 pandas==2.2.2
 scikit-learn==1.6.0
+networkx==3.4.2
+torch==2.5.1+cpu --extra-index-url https://download.pytorch.org/whl/cpu
+torch_geometric==2.6.1
