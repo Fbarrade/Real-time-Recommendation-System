@@ -55,6 +55,10 @@ def aggregate_gnn_data(**context):
     gnn_dataset.process()
     gnn_dataset.save(data_dir)
 
+
+def hyperparams_optimization():
+    pass 
+
 def train_gnn_task():
 
     run = wandb.init(
@@ -74,7 +78,7 @@ def train_gnn_task():
         "batch_size": 32,
     })
     
-    train_gnn_model(model, trainset, run=run)
+    train_gnn_model(model=model, trainset=trainset, testset=testset, run=run)
 
     torch.save(
         model.state_dict(), models_dir / "gnn-recsys-model.pt"

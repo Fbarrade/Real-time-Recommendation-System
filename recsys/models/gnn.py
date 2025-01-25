@@ -40,7 +40,7 @@ class GNNModel(torch.nn.Module):
 
 
 def train_gnn_model(
-    model: GNNModel, trainset, run
+    model: GNNModel, trainset, testset, run
 ):
     opt = torch.optim.Adam(model.parameters(), lr=run.config.get("lr"))
     loss_fn = nn.MSELoss()
@@ -61,9 +61,24 @@ def train_gnn_model(
 
         run.log({"Train/Loss": total_loss})
 
+        validate_gnn_model(
+            model=model, testset=testset, run=run, is_val= False
+        )
         opt.step()
-
         print(f'Epoch {epoch + 1}, Loss: {total_loss}')
+
+@torch.no_grad()
+def validate_gnn_model(
+    model: GNNModel, testset, run, is_val = False
+):
+    loss_fn = nn.MSELoss()
+
+    model.eval()
+    out = model(testset)
+    loss = loss_fn(out, testset.edge_attr.view(-1, 1))
+
+    run.log({f"{'Val' if is_val else 'Test'}/Loss": loss.item()})
+
 
 
     
