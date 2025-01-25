@@ -14,7 +14,7 @@ __all__ = ["GNNModel", "GNNConfigs", "train_gnn_model"]
 
 @dataclass
 class GNNConfigs:
-    in_channels: int =  10
+    in_channels: int =  495
     hidden_channels: int = 16 
     out_channels: int = 1
 
@@ -40,12 +40,12 @@ class GNNModel(torch.nn.Module):
 
 
 def train_gnn_model(
-    model: GNNModel, hypr: dict, trainset
+    model: GNNModel, trainset, run
 ):
-    opt = torch.optim.Adam(model.parameters(), lr=hypr["lr"])
+    opt = torch.optim.Adam(model.parameters(), lr=run.config.get("lr"))
     loss_fn = nn.MSELoss()
 
-    for epoch in range(hypr["epochs"]):
+    for epoch in range(run.config.get("epochs")):
 
         model.train()
 
@@ -59,9 +59,12 @@ def train_gnn_model(
 
         total_loss += loss.item()
 
+        run.log({"Train/Loss": total_loss})
+
         opt.step()
 
         print(f'Epoch {epoch + 1}, Loss: {total_loss}')
+
 
     
 

@@ -4,16 +4,23 @@ services:
       - airflow-postgres-data:/var/lib/postgresql/data
 
   webserver:
+    env_file:
+      - .env
     volumes:
       - ./dags:/usr/local/airflow/dags
       - ./logs:/usr/local/airflow/logs
-      - ./data:/usr/local/airflow/data  
+      - ./data:/usr/local/airflow/data
+      - ./models:/usr/local/airflow/models
+      - ./.env:/usr/local/airflow/.env 
 
   scheduler:
     volumes:
       - ./dags:/usr/local/airflow/dags
       - ./logs:/usr/local/airflow/logs
-      - ./data:/usr/local/airflow/data  
+      - ./data:/usr/local/airflow/data
+      - ./models:/usr/local/airflow/models
+      - ./.env:/usr/local/airflow/.env   
+
 
 volumes:
   airflow-postgres-data:

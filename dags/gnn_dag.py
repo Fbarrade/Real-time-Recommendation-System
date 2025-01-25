@@ -9,9 +9,19 @@ import torch
 from recsys.models import GNNModel, train_gnn_model, GNNConfigs  # Replace with the correct imports
 
 from pathlib import Path 
+import wandb 
+import os 
+
+wandb.login(key=os.getenv("WAND_API_KEY"))
+
 
 data_dir = Path("./data")
 data_dir.mkdir(exist_ok=True)
+
+
+models_dir = Path("./models")
+models_dir.mkdir(exist_ok=True)
+
 
 def process_places():
     places = YelpDestinationsGNNDataset()
@@ -45,19 +55,36 @@ def aggregate_gnn_data(**context):
     gnn_dataset.process()
     gnn_dataset.save(data_dir)
 
-def train_gnn_task(**context):
+def train_gnn_task():
+
+    run = wandb.init(
+        project="bigdata-recsys",
+        notes="gnn-recsys",
+        tags=["gnn", "recsys"],
+        config= {"epochs": 300, }
+    )
 
     trainset, testset, valset = torch.load(data_dir / "gnn_datasets.pt")
     
     configs = GNNConfigs(in_channels=495, hidden_channels=16, out_channels=1)
     model = GNNModel(configs)
-    hyperparameters = {
+
+    wandb.config.update({
         "lr": 0.001,
         "batch_size": 32,
-        "epochs": 10
-    }
+    })
     
-    train_gnn_model(model, hyperparameters, trainset)
+    train_gnn_model(model, trainset, run=run)
+
+    torch.save(
+        model.state_dict(), models_dir / "gnn-recsys-model.pt"
+    )
+
+    artifact = wandb.Artifact('model', type='model')
+    artifact.add_file(models_dir / "gnn-recsys-model.pt")
+    run.log_artifact(artifact)
+
+    run.finish()
 
 with DAG(
     dag_id="yelp_gnn_pipeline",
@@ -91,7 +118,6 @@ with DAG(
     train_gnn_model_task = PythonOperator(
         task_id="train_gnn_model",
         python_callable=train_gnn_task,
-        provide_context=True  # Enable context to access XCom
     )
 
     # Define task dependencies
