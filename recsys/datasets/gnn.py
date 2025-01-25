@@ -1,6 +1,7 @@
 import networkx as nx
 import pandas as pd
 
+from pathlib import Path
 import random
 
 import torch
@@ -139,4 +140,11 @@ class YelpGNNDataset:
        )
 
        self.train_data, self.val_data, self.test_data = self.create_graph_datasets(G= self.G)
-        
+
+    def save(self, save_dir: str):
+        save_dir = Path(save_dir)
+
+        torch.save(
+            self.get_gnn_datasets(),
+            f= save_dir / "gnn_datasets.pt"
+        )
