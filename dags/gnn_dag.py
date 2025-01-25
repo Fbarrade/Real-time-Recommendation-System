@@ -6,7 +6,14 @@ from recsys.datasets import (
     YelpGNNDataset
 )
 import torch
-from recsys.models import GNNModel, train_gnn_model, GNNConfigs  # Replace with the correct imports
+from recsys.models import (
+    GNNModel, train_gnn_model, GNNConfigs, train_step_optuna
+    
+) # Replace with the correct imports
+
+from optuna.integration.wandb import WeightsAndBiasesCallback
+import optuna
+from optuna.trial import TrialState
 
 from pathlib import Path 
 import wandb 
@@ -56,27 +63,49 @@ def aggregate_gnn_data(**context):
     gnn_dataset.save(data_dir)
 
 
-def hyperparams_optimization():
-    pass 
+def hyperparams_optimization(**context):
 
-def train_gnn_task():
+    def objective(trial): 
+        trainset, _, _ = torch.load(data_dir / "gnn_datasets.pt")
+
+        loss = train_step_optuna(trial, trainset=trainset)
+
+        return loss 
+
+    # wandbc = WeightsAndBiasesCallback(wandb_kwargs={
+    #     "project": "my-project"
+    # })
+    
+    study = optuna.create_study(direction="minimize")
+    study.optimize(objective, n_trials=100, timeout=600)
+
+    context['ti'].xcom_push(key='best_hyperparameters', value=study.best_trial.params)
+    # context['ti'].xcom_push(key='run_id', value=study.best_trial.params)
+
+def train_gnn_task(**context):
+
+    best_hyperparams = context['ti'].xcom_pull(task_ids='hyperparams_optim_optuna', key='best_hyperparameters')
 
     run = wandb.init(
         project="bigdata-recsys",
         notes="gnn-recsys",
         tags=["gnn", "recsys"],
-        config= {"epochs": 300, }
+        config={"epochs": 300, **best_hyperparams}
     )
 
     trainset, testset, valset = torch.load(data_dir / "gnn_datasets.pt")
     
-    configs = GNNConfigs(in_channels=495, hidden_channels=16, out_channels=1)
-    model = GNNModel(configs)
+    model = GNNModel(
+        configs=GNNConfigs(
+            hidden_channels= run.config.get("hidden_channels"), 
+            num_gnn_layers= run.config.get("n_gnn_layers"),
+            num_fc_layers= run.config.get("n_fc_layers")
+        )
+    )
 
-    wandb.config.update({
-        "lr": 0.001,
-        "batch_size": 32,
-    })
+    # wandb.config.update({
+    #     "batch_size": 32,
+    # })
     
     train_gnn_model(model=model, trainset=trainset, testset=testset, run=run)
 
@@ -119,10 +148,17 @@ with DAG(
         provide_context=True
     )
 
+    hyperparams_optimization_task = PythonOperator(
+        task_id="hyperparams_optim_optuna",
+        python_callable=hyperparams_optimization,
+        provide_context=True
+    )
+
     train_gnn_model_task = PythonOperator(
         task_id="train_gnn_model",
         python_callable=train_gnn_task,
+        provide_context=True
     )
 
     # Define task dependencies
-    [process_places_task, process_users_task, process_reviews_task] >> aggregate_gnn_task >> train_gnn_model_task
+    [process_places_task, process_users_task, process_reviews_task] >> aggregate_gnn_task >> hyperparams_optimization_task >> train_gnn_model_task

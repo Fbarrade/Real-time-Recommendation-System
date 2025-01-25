@@ -6,3 +6,5 @@ networkx==3.4.2
 torch
 torch_geometric==2.6.1
 wandb
+optuna==4.2.0
+optuna-integration==4.2.1 
