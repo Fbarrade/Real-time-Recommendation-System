@@ -1,0 +1,52 @@
+{
+    "reviews": {
+        "review_id": ["KU_O5udG6zpxOg-VcAEodg"],
+        "user_id": ["mh_-eMZ6K5RLWhZyISBhwA"],
+        "business_id": ["XQfwVwDr-v0ZS3_CbbE5Xw"],
+        "stars": [3],
+        "useful": [0],
+        "funny": [0],
+        "cool": [0],
+        "text": ["If you decide to eat here, just be aware it is going to take about 2 hours from beginning to end. We have tried it multiple times, because I want to like it! I have been to its other locations in NJ and never had a bad experience."],
+        "date": ["YYYY-MM-DD"]
+    },
+    "places": {
+        "business_id": ["WKMJwqnfZKsAae75RMP6jA"],
+        "name": ["Roast Coffeehouse and Wine Bar"],
+        "address": ["10359 104 Street NW"],
+        "city": ["Edmonton"],
+        "state": ["AB"],
+        "postal_code": ["T5J 1B9"],
+        "latitude": [53.5460453],
+        "longitude": [-113.4991693],
+        "stars": [4.0],
+        "review_count": [40],
+        "is_open": [0],
+        "categories": ["Coffee & Tea, Food, Cafes, Bars, Wine Bars, Restaurants, Nightlife"],
+        "attributes":[{
+                    "OutdoorSeating": "false",
+                    "Caters": "true",
+                    "RestaurantsDelivery": "false"
+        }],
+        "hours": [{
+            "Monday": "8:0-18:0",
+            "Tuesday": "8:0-18:0",
+            "Wednesday": "8:0-18:0",
+            "Thursday": "8:0-18:0",
+            "Friday": "8:0-18:0",
+            "Saturday": "8:0-18:0",
+            "Sunday": "10:0-17:0"
+        }]
+    },
+    "users": {
+        "user_id": ["LbPkYMGmsu4snHkY-Ri1ww"],
+        "name": ["David"],
+        "review_count": [14],
+        "yelping_since": ["2011-03-05 05:28:00"],
+        "useful": [10],
+        "funny": [3],
+        "cool": [2],
+        "elite": [""],
+        "friends": [["opIM6lGvGNIVL8tMDa3_Uw", "5wqafYyVJM5lKbOMIs-A3Q"]]
+    },
+}

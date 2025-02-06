@@ -1,0 +1,33 @@
+{
+  "os": "Linux-6.5.0-44-generic-x86_64-with-glibc2.38",
+  "python": "CPython 3.11.11",
+  "startedAt": "2025-02-05T14:44:56.190980Z",
+  "args": [
+    "api.api:app",
+    "--reload"
+  ],
+  "program": "/home/moussa/miniconda3/envs/real-recsys/bin/uvicorn",
+  "git": {
+    "remote": "https://github.com/Fbarrade/Real-time-Recommendation-System.git",
+    "commit": "2b419366bba40805b1d9b20a3b6143ba393e2cb6"
+  },
+  "email": "moussa2bacsmbiof@gmail.com",
+  "root": "/home/moussa/Documents/programming/Real-time-Recommendation-System",
+  "host": "moussa-hp",
+  "executable": "/home/moussa/miniconda3/envs/real-recsys/bin/python",
+  "cpu_count": 2,
+  "cpu_count_logical": 4,
+  "disk": {
+    "/": {
+      "total": "174969888768",
+      "used": "120511389696"
+    }
+  },
+  "memory": {
+    "total": "8191868928"
+  },
+  "cpu": {
+    "count": 2,
+    "countLogical": 4
+  }
+}
